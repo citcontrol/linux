@@ -18,44 +18,53 @@ enum rpcif_data_dir {
 	RPCIF_DATA_IN,
 	RPCIF_DATA_OUT,
 };
+struct {
+	u8 buswidth;
+	u8 opcode;
+	bool ddr;
+} cmd, ocmd;
+
+struct {
+	u8 nbytes;
+	u8 buswidth;
+	bool ddr;
+	u64 val;
+} addr;
+
+struct {
+	u8 ncycles;
+	u8 buswidth;
+} dummy;
+
+struct {
+	u8 nbytes;
+	u8 buswidth;
+	bool ddr;
+	u32 val;
+} option;
+
+struct {
+	u8 buswidth;
+	unsigned int nbytes;
+	enum rpcif_data_dir dir;
+	bool ddr;
+	union {
+		void *in;
+		const void *out;
+	} buf;
+} data;
 
 struct rpcif_op {
-	struct {
-		u8 buswidth;
-		u8 opcode;
-		bool ddr;
-	} cmd, ocmd;
-
-	struct {
-		u8 nbytes;
-		u8 buswidth;
-		bool ddr;
-		u64 val;
-	} addr;
-
-	struct {
-		u8 ncycles;
-		u8 buswidth;
-	} dummy;
-
-	struct {
-		u8 nbytes;
-		u8 buswidth;
-		bool ddr;
-		u32 val;
-	} option;
-
-	struct {
-		u8 buswidth;
-		unsigned int nbytes;
-		enum rpcif_data_dir dir;
-		bool ddr;
-		union {
-			void *in;
-			const void *out;
-		} buf;
-	} data;
+	
+	ocmd* md;
+	addr* addrs;
+	dummy* dummt;
+	option* options;
+	data *  datas;
+	uint8 c[8];
+	
 };
+rpcif_op * rpcif_ops;
 
 enum rpcif_type {
 	RPCIF_RCAR_GEN3,
